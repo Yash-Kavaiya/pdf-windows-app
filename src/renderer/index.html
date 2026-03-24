@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';">
+  <title>PDFWatermark Pro</title>
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <!-- Top Toolbar -->
+  <header class="toolbar">
+    <div class="toolbar-left">
+      <button id="btn-open-pdf" class="toolbar-btn primary" title="Open PDF (Ctrl+O)">
+        <span class="icon">&#128194;</span> Open PDF
+      </button>
+      <button id="btn-batch-mode" class="toolbar-btn" title="Batch Mode">
+        <span class="icon">&#128203;</span> Batch Mode
+      </button>
+      <span id="file-info" class="file-info">No file loaded</span>
+    </div>
+    <div class="toolbar-right">
+      <button id="btn-load-template" class="toolbar-btn" title="Load Template">Load Template</button>
+      <button id="btn-save-template" class="toolbar-btn" title="Save Template">Save Template</button>
+      <button id="btn-preview" class="toolbar-btn" title="Preview Watermark">Preview</button>
+      <button id="btn-apply" class="toolbar-btn success" title="Apply & Save (Ctrl+S)" disabled>
+        <span class="icon">&#128190;</span> Apply &amp; Save
+      </button>
+      <button id="btn-theme" class="toolbar-btn icon-only" title="Toggle Theme">&#9790;</button>
+    </div>
+  </header>
+
+  <main class="app-layout">
+    <!-- Left Sidebar: Watermark Config -->
+    <aside class="sidebar">
+      <!-- Watermark Type Tabs -->
+      <div class="tab-bar">
+        <button class="tab active" data-tab="text">Text</button>
+        <button class="tab" data-tab="image">Image</button>
+      </div>
+
+      <!-- Text Watermark Panel -->
+      <div id="panel-text" class="panel active">
+        <div class="form-group">
+          <label for="wm-text">Watermark Text</label>
+          <input type="text" id="wm-text" value="CONFIDENTIAL" placeholder="Enter watermark text">
+        </div>
+
+        <div class="form-group">
+          <label for="wm-font-size">Font Size: <span id="wm-font-size-val">48</span></label>
+          <input type="range" id="wm-font-size" min="8" max="200" value="48">
+        </div>
+
+        <div class="form-group">
+          <label for="wm-font-family">Font</label>
+          <select id="wm-font-family">
+            <option value="helvetica">Helvetica</option>
+            <option value="helvetica-bold">Helvetica Bold</option>
+            <option value="times-roman">Times Roman</option>
+            <option value="times-bold">Times Bold</option>
+            <option value="courier">Courier</option>
+            <option value="courier-bold">Courier Bold</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="wm-color">Color</label>
+          <input type="color" id="wm-color" value="#808080">
+        </div>
+
+        <div class="form-group">
+          <label for="wm-opacity">Opacity: <span id="wm-opacity-val">30</span>%</label>
+          <input type="range" id="wm-opacity" min="0" max="100" value="30">
+        </div>
+
+        <div class="form-group">
+          <label for="wm-rotation">Rotation: <span id="wm-rotation-val">45</span>&deg;</label>
+          <input type="range" id="wm-rotation" min="0" max="360" value="45">
+        </div>
+
+        <div class="form-group">
+          <label for="wm-position">Position</label>
+          <select id="wm-position">
+            <option value="center">Center</option>
+            <option value="top-left">Top Left</option>
+            <option value="top-center">Top Center</option>
+            <option value="top-right">Top Right</option>
+            <option value="center-left">Center Left</option>
+            <option value="center-right">Center Right</option>
+            <option value="bottom-left">Bottom Left</option>
+            <option value="bottom-center">Bottom Center</option>
+            <option value="bottom-right">Bottom Right</option>
+          </select>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="wm-tiling">
+          <label for="wm-tiling">Tile / Repeat</label>
+        </div>
+      </div>
+
+      <!-- Image Watermark Panel -->
+      <div id="panel-image" class="panel">
+        <div class="form-group">
+          <button id="btn-select-image" class="toolbar-btn full-width">Select Image (PNG/JPG)</button>
+          <span id="image-info" class="file-info">No image selected</span>
+        </div>
+
+        <div class="form-group">
+          <label for="wm-img-scale">Scale: <span id="wm-img-scale-val">50</span>%</label>
+          <input type="range" id="wm-img-scale" min="10" max="300" value="50">
+        </div>
+
+        <div class="form-group">
+          <label for="wm-img-opacity">Opacity: <span id="wm-img-opacity-val">30</span>%</label>
+          <input type="range" id="wm-img-opacity" min="0" max="100" value="30">
+        </div>
+
+        <div class="form-group">
+          <label for="wm-img-rotation">Rotation: <span id="wm-img-rotation-val">0</span>&deg;</label>
+          <input type="range" id="wm-img-rotation" min="0" max="360" value="0">
+        </div>
+
+        <div class="form-group">
+          <label for="wm-img-position">Position</label>
+          <select id="wm-img-position">
+            <option value="center">Center</option>
+            <option value="top-left">Top Left</option>
+            <option value="top-center">Top Center</option>
+            <option value="top-right">Top Right</option>
+            <option value="center-left">Center Left</option>
+            <option value="center-right">Center Right</option>
+            <option value="bottom-left">Bottom Left</option>
+            <option value="bottom-center">Bottom Center</option>
+            <option value="bottom-right">Bottom Right</option>
+          </select>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="wm-img-tiling">
+          <label for="wm-img-tiling">Tile / Repeat</label>
+        </div>
+      </div>
+
+      <!-- Page Range (shared) -->
+      <div class="panel active page-range-panel">
+        <h3>Page Range</h3>
+        <div class="form-group">
+          <div class="radio-group">
+            <label><input type="radio" name="page-range" value="all" checked> All Pages</label>
+            <label><input type="radio" name="page-range" value="odd"> Odd Pages</label>
+            <label><input type="radio" name="page-range" value="even"> Even Pages</label>
+            <label><input type="radio" name="page-range" value="custom"> Custom</label>
+          </div>
+          <input type="text" id="page-range-custom" placeholder="e.g. 1-5, 8, 10-15" disabled>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center: Preview -->
+    <section class="preview-area">
+      <div class="preview-toolbar">
+        <button id="btn-prev-page" class="toolbar-btn small" disabled>&larr; Prev</button>
+        <span id="page-indicator">Page 0 / 0</span>
+        <button id="btn-next-page" class="toolbar-btn small" disabled>Next &rarr;</button>
+        <div class="zoom-controls">
+          <button id="btn-zoom-out" class="toolbar-btn small">-</button>
+          <span id="zoom-level">100%</span>
+          <button id="btn-zoom-in" class="toolbar-btn small">+</button>
+          <button id="btn-zoom-fit" class="toolbar-btn small">Fit</button>
+        </div>
+      </div>
+      <div id="preview-container" class="preview-container">
+        <div class="preview-placeholder">
+          <p>Open a PDF file to get started</p>
+          <p class="hint">Drag &amp; drop or click "Open PDF"</p>
+        </div>
+        <canvas id="preview-canvas"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom Status Bar -->
+  <footer class="status-bar">
+    <div id="status-text">Ready</div>
+    <div class="progress-wrapper">
+      <progress id="progress-bar" max="100" value="0" style="display:none;"></progress>
+    </div>
+  </footer>
+
+  <!-- Batch Mode Modal -->
+  <div id="batch-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Batch Processing</h2>
+        <button id="btn-close-batch" class="toolbar-btn icon-only">&times;</button>
+      </div>
+      <div class="modal-body">
+        <button id="btn-batch-select" class="toolbar-btn full-width">Select PDF Files</button>
+        <div id="batch-file-list" class="batch-file-list">
+          <p class="hint">No files selected</p>
+        </div>
+        <button id="btn-batch-start" class="toolbar-btn success full-width" disabled>
+          Start Batch Processing
+        </button>
+        <div id="batch-progress-info" class="batch-progress-info" style="display:none;">
+          <progress id="batch-progress-bar" max="100" value="0"></progress>
+          <span id="batch-progress-text">Processing...</span>
+        </div>
+        <div id="batch-results" class="batch-results" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/preview.js"></script>
+  <script src="js/watermark-ui.js"></script>
+  <script src="js/batch.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
