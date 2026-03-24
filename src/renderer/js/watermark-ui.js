@@ -59,6 +59,28 @@ const WatermarkUI = (() => {
         el.addEventListener('input', fireChange);
       }
     });
+
+    // X/Y number inputs
+    ['wm-x', 'wm-y', 'wm-img-x', 'wm-img-y'].forEach((id) => {
+      const el = document.getElementById(id);
+      el.addEventListener('input', fireChange);
+      el.addEventListener('change', fireChange);
+    });
+  }
+
+  // Show/hide X/Y inputs when position dropdown changes
+  function initPositionXY() {
+    const posSelect = document.getElementById('wm-position');
+    const posXyGroup = document.getElementById('wm-xy-group');
+    posSelect.addEventListener('change', () => {
+      posXyGroup.style.display = posSelect.value === 'custom-xy' ? 'block' : 'none';
+    });
+
+    const imgPosSelect = document.getElementById('wm-img-position');
+    const imgPosXyGroup = document.getElementById('wm-img-xy-group');
+    imgPosSelect.addEventListener('change', () => {
+      imgPosXyGroup.style.display = imgPosSelect.value === 'custom-xy' ? 'block' : 'none';
+    });
   }
 
   // Page range controls
@@ -98,6 +120,12 @@ const WatermarkUI = (() => {
       const g = parseInt(hexColor.slice(3, 5), 16) / 255;
       const b = parseInt(hexColor.slice(5, 7), 16) / 255;
 
+      const posVal = document.getElementById('wm-position').value;
+      const position = posVal === 'custom-xy'
+        ? { x: parseInt(document.getElementById('wm-x').value, 10) || 50,
+            y: parseInt(document.getElementById('wm-y').value, 10) || 50 }
+        : posVal;
+
       return {
         type: 'text',
         settings: {
@@ -107,19 +135,25 @@ const WatermarkUI = (() => {
           color: { r, g, b },
           opacity: parseInt(document.getElementById('wm-opacity').value, 10),
           rotation: parseInt(document.getElementById('wm-rotation').value, 10),
-          position: document.getElementById('wm-position').value,
+          position,
           tiling: document.getElementById('wm-tiling').checked,
           pageRange,
         },
       };
     } else {
+      const imgPosVal = document.getElementById('wm-img-position').value;
+      const position = imgPosVal === 'custom-xy'
+        ? { x: parseInt(document.getElementById('wm-img-x').value, 10) || 50,
+            y: parseInt(document.getElementById('wm-img-y').value, 10) || 50 }
+        : imgPosVal;
+
       return {
         type: 'image',
         settings: {
           scale: parseInt(document.getElementById('wm-img-scale').value, 10),
           opacity: parseInt(document.getElementById('wm-img-opacity').value, 10),
           rotation: parseInt(document.getElementById('wm-img-rotation').value, 10),
-          position: document.getElementById('wm-img-position').value,
+          position,
           tiling: document.getElementById('wm-img-tiling').checked,
           pageRange,
         },
@@ -153,7 +187,17 @@ const WatermarkUI = (() => {
       document.getElementById('wm-opacity-val').textContent = s.opacity ?? 30;
       document.getElementById('wm-rotation').value = s.rotation ?? 45;
       document.getElementById('wm-rotation-val').textContent = s.rotation ?? 45;
-      document.getElementById('wm-position').value = s.position || 'center';
+
+      if (s.position && typeof s.position === 'object') {
+        document.getElementById('wm-position').value = 'custom-xy';
+        document.getElementById('wm-xy-group').style.display = 'block';
+        document.getElementById('wm-x').value = s.position.x ?? 50;
+        document.getElementById('wm-y').value = s.position.y ?? 50;
+      } else {
+        document.getElementById('wm-position').value = s.position || 'center';
+        document.getElementById('wm-xy-group').style.display = 'none';
+      }
+
       document.getElementById('wm-tiling').checked = s.tiling || false;
     } else if (config.type === 'image') {
       document.querySelector('.tab[data-tab="image"]').click();
@@ -165,7 +209,17 @@ const WatermarkUI = (() => {
       document.getElementById('wm-img-opacity-val').textContent = s.opacity ?? 30;
       document.getElementById('wm-img-rotation').value = s.rotation ?? 0;
       document.getElementById('wm-img-rotation-val').textContent = s.rotation ?? 0;
-      document.getElementById('wm-img-position').value = s.position || 'center';
+
+      if (s.position && typeof s.position === 'object') {
+        document.getElementById('wm-img-position').value = 'custom-xy';
+        document.getElementById('wm-img-xy-group').style.display = 'block';
+        document.getElementById('wm-img-x').value = s.position.x ?? 50;
+        document.getElementById('wm-img-y').value = s.position.y ?? 50;
+      } else {
+        document.getElementById('wm-img-position').value = s.position || 'center';
+        document.getElementById('wm-img-xy-group').style.display = 'none';
+      }
+
       document.getElementById('wm-img-tiling').checked = s.tiling || false;
     }
 
@@ -198,6 +252,7 @@ const WatermarkUI = (() => {
     initSliders();
     initInputListeners();
     initPageRange();
+    initPositionXY();
   }
 
   return {

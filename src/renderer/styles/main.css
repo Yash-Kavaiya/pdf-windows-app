@@ -483,6 +483,46 @@ progress::-webkit-progress-value {
   font-size: 12px;
 }
 
+/* === X/Y Coordinate Inputs === */
+.xy-row {
+  display: flex;
+  gap: 10px;
+}
+
+.xy-field {
+  flex: 1;
+}
+
+.xy-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.xy-field input[type="number"] {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.xy-field input[type="number"]:focus {
+  border-color: var(--accent);
+}
+
+.xy-hint {
+  font-size: 11px;
+  color: var(--text-hint);
+  margin-top: 5px;
+}
+
 /* === Scrollbar === */
 ::-webkit-scrollbar {
   width: 8px;

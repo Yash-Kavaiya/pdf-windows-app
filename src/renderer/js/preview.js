@@ -104,16 +104,16 @@ const PreviewManager = (() => {
   }
 
   /**
-   * Dynamically load pdf.js library.
+   * Dynamically load pdf.js library via the app:// protocol.
+   * file:// URLs have unique opaque origins in Chromium, blocking cross-file
+   * ES module imports. The app:// protocol gives a consistent origin.
    */
   let pdfjsLibCached = null;
   async function getPdfjsLib() {
     if (pdfjsLibCached) return pdfjsLibCached;
 
-    // pdf.js is loaded via the node_modules path in Electron
-    const pdfjsLib = require('pdfjs-dist');
-    // Disable worker for simplicity in Electron
-    pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+    const pdfjsLib = await import('app://localhost/node_modules/pdfjs-dist/build/pdf.mjs');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'app://localhost/node_modules/pdfjs-dist/build/pdf.worker.mjs';
     pdfjsLibCached = pdfjsLib;
     return pdfjsLib;
   }
