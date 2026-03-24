@@ -107,6 +107,18 @@ async function loadTemplateDialog() {
   return JSON.parse(content);
 }
 
+async function saveTxtDialog(text) {
+  const result = await dialog.showSaveDialog({
+    title: 'Save OCR Text',
+    filters: [{ name: 'Text Files', extensions: ['txt'] }],
+    defaultPath: 'ocr-output.txt',
+  });
+
+  if (result.canceled || !result.filePath) return false;
+  fs.writeFileSync(result.filePath, text, 'utf-8');
+  return true;
+}
+
 module.exports = {
   openPdfDialog,
   openMultiplePdfsDialog,
@@ -115,4 +127,5 @@ module.exports = {
   selectOutputDirDialog,
   saveTemplateDialog,
   loadTemplateDialog,
+  saveTxtDialog,
 };

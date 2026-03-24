@@ -199,6 +199,18 @@ body {
   padding: 16px;
 }
 
+/* Merge/Split/Compress/OCR sidebar form-groups need padding */
+.mode-panel > .form-group,
+.mode-panel > .tool-progress-info,
+.mode-panel > .compress-stats {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.mode-panel > .form-group:first-of-type {
+  padding-top: 12px;
+}
+
 .panel.active {
   display: block;
 }
@@ -521,6 +533,285 @@ progress::-webkit-progress-value {
   font-size: 11px;
   color: var(--text-hint);
   margin-top: 5px;
+}
+
+/* === Mode Bar === */
+.mode-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 12px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mode-btn {
+  padding: 5px 16px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.mode-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.mode-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* === Mode Panels (sidebar) === */
+.mode-panel {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.mode-panel.active {
+  display: flex;
+}
+
+.tool-panel-header {
+  padding: 16px 16px 8px;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 4px;
+}
+
+.tool-panel-header h2 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.tool-panel-header .hint {
+  font-size: 12px;
+  color: var(--text-hint);
+}
+
+/* === Merge File List === */
+.tool-file-list {
+  flex: 1;
+  overflow-y: auto;
+  margin: 0 0 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  margin: 0 16px 8px;
+  min-height: 80px;
+  max-height: 260px;
+  padding: 6px;
+}
+
+.list-empty-hint {
+  padding: 16px;
+  text-align: center;
+}
+
+.merge-file-entry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 4px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.merge-file-entry:hover {
+  background: var(--bg-hover);
+}
+
+.merge-file-entry .file-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.merge-file-entry .file-order {
+  font-size: 11px;
+  color: var(--text-hint);
+  min-width: 18px;
+}
+
+.merge-file-entry button {
+  padding: 2px 6px;
+  font-size: 11px;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  background: var(--bg-secondary);
+  cursor: pointer;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.merge-file-entry button:hover {
+  background: var(--bg-hover);
+}
+
+/* === Tool Actions === */
+.tool-actions {
+  padding: 0 16px 16px;
+}
+
+.sidebar .form-group.tool-actions {
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+/* === Split Range Textarea === */
+.tool-textarea {
+  width: 100%;
+  height: 100px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 13px;
+  resize: vertical;
+  outline: none;
+  font-family: 'Consolas', monospace;
+  transition: border-color 0.15s;
+}
+
+.tool-textarea:focus {
+  border-color: var(--accent);
+}
+
+/* === Progress for tools === */
+.tool-progress-info {
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tool-progress-info progress {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  accent-color: var(--accent);
+}
+
+.tool-progress-info span {
+  font-size: 11px;
+  color: var(--text-hint);
+}
+
+/* === Compress Stats === */
+.compress-stats {
+  margin: 0 16px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 13px;
+}
+
+.stat-row:last-child {
+  border-bottom: none;
+}
+
+.stat-row.highlight {
+  background: var(--bg-primary);
+  font-weight: 700;
+  color: var(--success);
+}
+
+.stat-label {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.stat-value {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* === Content Panels (preview area) === */
+.content-panel {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.content-panel.active {
+  display: flex;
+}
+
+/* Tool hero (Merge / Compress overview) */
+.tool-content-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 40px 24px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.tool-hero-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.4;
+}
+
+.tool-content-center h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.tool-summary {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* === OCR Output === */
+.ocr-output-header {
+  padding: 8px 16px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ocr-textarea {
+  flex: 1;
+  padding: 16px;
+  border: none;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+  overflow-y: auto;
 }
 
 /* === Scrollbar === */

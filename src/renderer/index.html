@@ -4,221 +4,374 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline';">
-  <title>PDFWatermark Pro</title>
+  <title>PDF Pro Suite</title>
   <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-  <!-- Top Toolbar -->
+
+  <!-- ─── Top Toolbar ──────────────────────────────────────────────────── -->
   <header class="toolbar">
     <div class="toolbar-left">
       <button id="btn-open-pdf" class="toolbar-btn primary" title="Open PDF (Ctrl+O)">
-        <span class="icon">&#128194;</span> Open PDF
+        &#128194; Open PDF
       </button>
-      <button id="btn-batch-mode" class="toolbar-btn" title="Batch Mode">
-        <span class="icon">&#128203;</span> Batch Mode
+      <button id="btn-batch-mode" class="toolbar-btn wm-only" title="Batch Mode">
+        &#128203; Batch
       </button>
       <span id="file-info" class="file-info">No file loaded</span>
     </div>
     <div class="toolbar-right">
-      <button id="btn-load-template" class="toolbar-btn" title="Load Template">Load Template</button>
-      <button id="btn-save-template" class="toolbar-btn" title="Save Template">Save Template</button>
-      <button id="btn-preview" class="toolbar-btn" title="Preview Watermark">Preview</button>
-      <button id="btn-apply" class="toolbar-btn success" title="Apply & Save (Ctrl+S)" disabled>
-        <span class="icon">&#128190;</span> Apply &amp; Save
+      <button id="btn-load-template" class="toolbar-btn wm-only" title="Load Template">Load Template</button>
+      <button id="btn-save-template" class="toolbar-btn wm-only" title="Save Template">Save Template</button>
+      <button id="btn-preview"   class="toolbar-btn wm-only" title="Preview Watermark">Preview</button>
+      <button id="btn-apply"     class="toolbar-btn success wm-only" title="Apply &amp; Save (Ctrl+S)" disabled>
+        &#128190; Apply &amp; Save
       </button>
       <button id="btn-theme" class="toolbar-btn icon-only" title="Toggle Theme">&#9790;</button>
     </div>
   </header>
 
+  <!-- ─── Mode Bar ─────────────────────────────────────────────────────── -->
+  <nav class="mode-bar">
+    <button class="mode-btn active" data-mode="watermark">&#9999; Watermark</button>
+    <button class="mode-btn" data-mode="merge">&#128279; Merge</button>
+    <button class="mode-btn" data-mode="split">&#9988; Split</button>
+    <button class="mode-btn" data-mode="compress">&#128230; Compress</button>
+    <button class="mode-btn" data-mode="ocr">&#128269; OCR</button>
+  </nav>
+
   <main class="app-layout">
-    <!-- Left Sidebar: Watermark Config -->
+
+    <!-- ─── Sidebar ──────────────────────────────────────────────────── -->
     <aside class="sidebar">
-      <!-- Watermark Type Tabs -->
-      <div class="tab-bar">
-        <button class="tab active" data-tab="text">Text</button>
-        <button class="tab" data-tab="image">Image</button>
-      </div>
 
-      <!-- Text Watermark Panel -->
-      <div id="panel-text" class="panel active">
-        <div class="form-group">
-          <label for="wm-text">Watermark Text</label>
-          <input type="text" id="wm-text" value="CONFIDENTIAL" placeholder="Enter watermark text">
+      <!-- ══ WATERMARK MODE ═══════════════════════════════════════════ -->
+      <div id="mode-panel-watermark" class="mode-panel active">
+        <div class="tab-bar">
+          <button class="tab active" data-tab="text">Text</button>
+          <button class="tab" data-tab="image">Image</button>
         </div>
 
-        <div class="form-group">
-          <label for="wm-font-size">Font Size: <span id="wm-font-size-val">48</span></label>
-          <input type="range" id="wm-font-size" min="8" max="200" value="48">
-        </div>
-
-        <div class="form-group">
-          <label for="wm-font-family">Font</label>
-          <select id="wm-font-family">
-            <option value="helvetica">Helvetica</option>
-            <option value="helvetica-bold">Helvetica Bold</option>
-            <option value="times-roman">Times Roman</option>
-            <option value="times-bold">Times Bold</option>
-            <option value="courier">Courier</option>
-            <option value="courier-bold">Courier Bold</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="wm-color">Color</label>
-          <input type="color" id="wm-color" value="#808080">
-        </div>
-
-        <div class="form-group">
-          <label for="wm-opacity">Opacity: <span id="wm-opacity-val">30</span>%</label>
-          <input type="range" id="wm-opacity" min="0" max="100" value="30">
-        </div>
-
-        <div class="form-group">
-          <label for="wm-rotation">Rotation: <span id="wm-rotation-val">45</span>&deg;</label>
-          <input type="range" id="wm-rotation" min="0" max="360" value="45">
-        </div>
-
-        <div class="form-group">
-          <label for="wm-position">Position</label>
-          <select id="wm-position">
-            <option value="center">Center</option>
-            <option value="top-left">Top Left</option>
-            <option value="top-center">Top Center</option>
-            <option value="top-right">Top Right</option>
-            <option value="center-left">Center Left</option>
-            <option value="center-right">Center Right</option>
-            <option value="bottom-left">Bottom Left</option>
-            <option value="bottom-center">Bottom Center</option>
-            <option value="bottom-right">Bottom Right</option>
-            <option value="custom-xy">Custom (X / Y)</option>
-          </select>
-        </div>
-
-        <div id="wm-xy-group" class="form-group xy-group" style="display:none;">
-          <div class="xy-row">
-            <div class="xy-field">
-              <label for="wm-x">X %</label>
-              <input type="number" id="wm-x" min="0" max="100" value="50" step="1">
-            </div>
-            <div class="xy-field">
-              <label for="wm-y">Y %</label>
-              <input type="number" id="wm-y" min="0" max="100" value="50" step="1">
-            </div>
+        <!-- Text Watermark -->
+        <div id="panel-text" class="panel active">
+          <div class="form-group">
+            <label for="wm-text">Watermark Text</label>
+            <input type="text" id="wm-text" value="CONFIDENTIAL" placeholder="Enter watermark text">
           </div>
-          <div class="xy-hint">0,0 = bottom-left &nbsp;&bull;&nbsp; 100,100 = top-right</div>
-        </div>
-
-        <div class="form-group checkbox-group">
-          <input type="checkbox" id="wm-tiling">
-          <label for="wm-tiling">Tile / Repeat</label>
-        </div>
-      </div>
-
-      <!-- Image Watermark Panel -->
-      <div id="panel-image" class="panel">
-        <div class="form-group">
-          <button id="btn-select-image" class="toolbar-btn full-width">Select Image (PNG/JPG)</button>
-          <span id="image-info" class="file-info">No image selected</span>
-        </div>
-
-        <div class="form-group">
-          <label for="wm-img-scale">Scale: <span id="wm-img-scale-val">50</span>%</label>
-          <input type="range" id="wm-img-scale" min="10" max="300" value="50">
-        </div>
-
-        <div class="form-group">
-          <label for="wm-img-opacity">Opacity: <span id="wm-img-opacity-val">30</span>%</label>
-          <input type="range" id="wm-img-opacity" min="0" max="100" value="30">
-        </div>
-
-        <div class="form-group">
-          <label for="wm-img-rotation">Rotation: <span id="wm-img-rotation-val">0</span>&deg;</label>
-          <input type="range" id="wm-img-rotation" min="0" max="360" value="0">
-        </div>
-
-        <div class="form-group">
-          <label for="wm-img-position">Position</label>
-          <select id="wm-img-position">
-            <option value="center">Center</option>
-            <option value="top-left">Top Left</option>
-            <option value="top-center">Top Center</option>
-            <option value="top-right">Top Right</option>
-            <option value="center-left">Center Left</option>
-            <option value="center-right">Center Right</option>
-            <option value="bottom-left">Bottom Left</option>
-            <option value="bottom-center">Bottom Center</option>
-            <option value="bottom-right">Bottom Right</option>
-            <option value="custom-xy">Custom (X / Y)</option>
-          </select>
-        </div>
-
-        <div id="wm-img-xy-group" class="form-group xy-group" style="display:none;">
-          <div class="xy-row">
-            <div class="xy-field">
-              <label for="wm-img-x">X %</label>
-              <input type="number" id="wm-img-x" min="0" max="100" value="50" step="1">
-            </div>
-            <div class="xy-field">
-              <label for="wm-img-y">Y %</label>
-              <input type="number" id="wm-img-y" min="0" max="100" value="50" step="1">
-            </div>
+          <div class="form-group">
+            <label for="wm-font-size">Font Size: <span id="wm-font-size-val">48</span></label>
+            <input type="range" id="wm-font-size" min="8" max="200" value="48">
           </div>
-          <div class="xy-hint">0,0 = bottom-left &nbsp;&bull;&nbsp; 100,100 = top-right</div>
+          <div class="form-group">
+            <label for="wm-font-family">Font</label>
+            <select id="wm-font-family">
+              <option value="helvetica">Helvetica</option>
+              <option value="helvetica-bold">Helvetica Bold</option>
+              <option value="times-roman">Times Roman</option>
+              <option value="times-bold">Times Bold</option>
+              <option value="courier">Courier</option>
+              <option value="courier-bold">Courier Bold</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="wm-color">Color</label>
+            <input type="color" id="wm-color" value="#808080">
+          </div>
+          <div class="form-group">
+            <label for="wm-opacity">Opacity: <span id="wm-opacity-val">30</span>%</label>
+            <input type="range" id="wm-opacity" min="0" max="100" value="30">
+          </div>
+          <div class="form-group">
+            <label for="wm-rotation">Rotation: <span id="wm-rotation-val">45</span>&deg;</label>
+            <input type="range" id="wm-rotation" min="0" max="360" value="45">
+          </div>
+          <div class="form-group">
+            <label for="wm-position">Position</label>
+            <select id="wm-position">
+              <option value="center">Center</option>
+              <option value="top-left">Top Left</option>
+              <option value="top-center">Top Center</option>
+              <option value="top-right">Top Right</option>
+              <option value="center-left">Center Left</option>
+              <option value="center-right">Center Right</option>
+              <option value="bottom-left">Bottom Left</option>
+              <option value="bottom-center">Bottom Center</option>
+              <option value="bottom-right">Bottom Right</option>
+              <option value="custom-xy">Custom (X / Y)</option>
+            </select>
+          </div>
+          <div id="wm-xy-group" class="form-group xy-group" style="display:none;">
+            <div class="xy-row">
+              <div class="xy-field">
+                <label for="wm-x">X %</label>
+                <input type="number" id="wm-x" min="0" max="100" value="50" step="1">
+              </div>
+              <div class="xy-field">
+                <label for="wm-y">Y %</label>
+                <input type="number" id="wm-y" min="0" max="100" value="50" step="1">
+              </div>
+            </div>
+            <div class="xy-hint">0,0 = bottom-left &nbsp;&bull;&nbsp; 100,100 = top-right</div>
+          </div>
+          <div class="form-group checkbox-group">
+            <input type="checkbox" id="wm-tiling">
+            <label for="wm-tiling">Tile / Repeat</label>
+          </div>
         </div>
 
-        <div class="form-group checkbox-group">
-          <input type="checkbox" id="wm-img-tiling">
-          <label for="wm-img-tiling">Tile / Repeat</label>
+        <!-- Image Watermark -->
+        <div id="panel-image" class="panel">
+          <div class="form-group">
+            <button id="btn-select-image" class="toolbar-btn full-width">Select Image (PNG/JPG)</button>
+            <span id="image-info" class="file-info">No image selected</span>
+          </div>
+          <div class="form-group">
+            <label for="wm-img-scale">Scale: <span id="wm-img-scale-val">50</span>%</label>
+            <input type="range" id="wm-img-scale" min="10" max="300" value="50">
+          </div>
+          <div class="form-group">
+            <label for="wm-img-opacity">Opacity: <span id="wm-img-opacity-val">30</span>%</label>
+            <input type="range" id="wm-img-opacity" min="0" max="100" value="30">
+          </div>
+          <div class="form-group">
+            <label for="wm-img-rotation">Rotation: <span id="wm-img-rotation-val">0</span>&deg;</label>
+            <input type="range" id="wm-img-rotation" min="0" max="360" value="0">
+          </div>
+          <div class="form-group">
+            <label for="wm-img-position">Position</label>
+            <select id="wm-img-position">
+              <option value="center">Center</option>
+              <option value="top-left">Top Left</option>
+              <option value="top-center">Top Center</option>
+              <option value="top-right">Top Right</option>
+              <option value="center-left">Center Left</option>
+              <option value="center-right">Center Right</option>
+              <option value="bottom-left">Bottom Left</option>
+              <option value="bottom-center">Bottom Center</option>
+              <option value="bottom-right">Bottom Right</option>
+              <option value="custom-xy">Custom (X / Y)</option>
+            </select>
+          </div>
+          <div id="wm-img-xy-group" class="form-group xy-group" style="display:none;">
+            <div class="xy-row">
+              <div class="xy-field">
+                <label for="wm-img-x">X %</label>
+                <input type="number" id="wm-img-x" min="0" max="100" value="50" step="1">
+              </div>
+              <div class="xy-field">
+                <label for="wm-img-y">Y %</label>
+                <input type="number" id="wm-img-y" min="0" max="100" value="50" step="1">
+              </div>
+            </div>
+            <div class="xy-hint">0,0 = bottom-left &nbsp;&bull;&nbsp; 100,100 = top-right</div>
+          </div>
+          <div class="form-group checkbox-group">
+            <input type="checkbox" id="wm-img-tiling">
+            <label for="wm-img-tiling">Tile / Repeat</label>
+          </div>
+        </div>
+
+        <!-- Page Range (shared for watermark) -->
+        <div class="panel active page-range-panel">
+          <h3>Page Range</h3>
+          <div class="form-group">
+            <div class="radio-group">
+              <label><input type="radio" name="page-range" value="all" checked> All Pages</label>
+              <label><input type="radio" name="page-range" value="odd"> Odd Pages</label>
+              <label><input type="radio" name="page-range" value="even"> Even Pages</label>
+              <label><input type="radio" name="page-range" value="custom"> Custom</label>
+            </div>
+            <input type="text" id="page-range-custom" placeholder="e.g. 1-5, 8, 10-15" disabled>
+          </div>
         </div>
       </div>
 
-      <!-- Page Range (shared) -->
-      <div class="panel active page-range-panel">
-        <h3>Page Range</h3>
+      <!-- ══ MERGE MODE ════════════════════════════════════════════════ -->
+      <div id="mode-panel-merge" class="mode-panel">
+        <div class="tool-panel-header">
+          <h2>Merge PDFs</h2>
+          <p class="hint">Combine multiple PDF files into one</p>
+        </div>
         <div class="form-group">
+          <button id="btn-merge-add" class="toolbar-btn full-width primary">
+            &#43; Add PDF Files
+          </button>
+        </div>
+        <div id="merge-file-list" class="tool-file-list">
+          <p class="hint list-empty-hint">No files added yet</p>
+        </div>
+        <div class="form-group tool-actions">
+          <button id="btn-merge-clear" class="toolbar-btn" style="display:none;">Clear All</button>
+          <button id="btn-merge-run" class="toolbar-btn success full-width" disabled>
+            &#128279; Merge &amp; Save
+          </button>
+        </div>
+      </div>
+
+      <!-- ══ SPLIT MODE ════════════════════════════════════════════════ -->
+      <div id="mode-panel-split" class="mode-panel">
+        <div class="tool-panel-header">
+          <h2>Split PDF</h2>
+          <p class="hint">Divide a PDF into separate files</p>
+        </div>
+        <div class="form-group">
+          <label>Split Mode</label>
           <div class="radio-group">
-            <label><input type="radio" name="page-range" value="all" checked> All Pages</label>
-            <label><input type="radio" name="page-range" value="odd"> Odd Pages</label>
-            <label><input type="radio" name="page-range" value="even"> Even Pages</label>
-            <label><input type="radio" name="page-range" value="custom"> Custom</label>
+            <label><input type="radio" name="split-mode" value="pages" checked> One file per page</label>
+            <label><input type="radio" name="split-mode" value="range"> Custom ranges</label>
           </div>
-          <input type="text" id="page-range-custom" placeholder="e.g. 1-5, 8, 10-15" disabled>
+        </div>
+        <div id="split-range-group" class="form-group" style="display:none;">
+          <label for="split-ranges">Page Ranges</label>
+          <textarea id="split-ranges" class="tool-textarea"
+            placeholder="One range per line, e.g.&#10;1-3&#10;4-6&#10;7-10"></textarea>
+          <div class="hint">Each line becomes a separate file</div>
+        </div>
+        <div class="form-group tool-actions">
+          <button id="btn-split-run" class="toolbar-btn success full-width" disabled>
+            &#9988; Split &amp; Save to Folder
+          </button>
+        </div>
+        <div id="split-progress-info" class="tool-progress-info" style="display:none;">
+          <progress id="split-progress-bar" max="100" value="0"></progress>
+          <span id="split-progress-text">Splitting...</span>
         </div>
       </div>
+
+      <!-- ══ COMPRESS MODE ══════════════════════════════════════════════ -->
+      <div id="mode-panel-compress" class="mode-panel">
+        <div class="tool-panel-header">
+          <h2>Compress PDF</h2>
+          <p class="hint">Reduce PDF file size by optimising its structure</p>
+        </div>
+        <div id="compress-stats" class="compress-stats" style="display:none;">
+          <div class="stat-row">
+            <span class="stat-label">Original</span>
+            <span id="compress-orig-size" class="stat-value">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Compressed</span>
+            <span id="compress-new-size" class="stat-value">—</span>
+          </div>
+          <div class="stat-row highlight">
+            <span class="stat-label">Saved</span>
+            <span id="compress-saving" class="stat-value">—</span>
+          </div>
+        </div>
+        <div class="form-group tool-actions">
+          <button id="btn-compress-run" class="toolbar-btn success full-width" disabled>
+            &#128230; Compress &amp; Save
+          </button>
+        </div>
+      </div>
+
+      <!-- ══ OCR MODE ══════════════════════════════════════════════════ -->
+      <div id="mode-panel-ocr" class="mode-panel">
+        <div class="tool-panel-header">
+          <h2>OCR — Extract Text</h2>
+          <p class="hint">Convert scanned pages to searchable text</p>
+        </div>
+        <div class="form-group">
+          <label for="ocr-lang">Language</label>
+          <select id="ocr-lang">
+            <option value="eng">English</option>
+            <option value="fra">French</option>
+            <option value="deu">German</option>
+            <option value="spa">Spanish</option>
+            <option value="ita">Italian</option>
+            <option value="por">Portuguese</option>
+            <option value="chi_sim">Chinese (Simplified)</option>
+            <option value="jpn">Japanese</option>
+            <option value="hin">Hindi</option>
+            <option value="ara">Arabic</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="hint">&#9432;&nbsp;Language data is downloaded on first use (~10&nbsp;MB). Internet required once.</label>
+        </div>
+        <div id="ocr-progress-info" class="tool-progress-info" style="display:none;">
+          <progress id="ocr-progress-bar" max="100" value="0"></progress>
+          <span id="ocr-progress-text">Processing page 0 / 0…</span>
+        </div>
+        <div class="form-group tool-actions">
+          <button id="btn-ocr-run" class="toolbar-btn success full-width" disabled>
+            &#128269; Start OCR
+          </button>
+          <button id="btn-ocr-save-txt" class="toolbar-btn full-width" disabled style="margin-top:8px;">
+            &#128196; Save as .txt
+          </button>
+        </div>
+      </div>
+
     </aside>
 
-    <!-- Center: Preview -->
+    <!-- ─── Content / Preview Area ───────────────────────────────────── -->
     <section class="preview-area">
-      <div class="preview-toolbar">
-        <button id="btn-prev-page" class="toolbar-btn small" disabled>&larr; Prev</button>
-        <span id="page-indicator">Page 0 / 0</span>
-        <button id="btn-next-page" class="toolbar-btn small" disabled>Next &rarr;</button>
-        <div class="zoom-controls">
-          <button id="btn-zoom-out" class="toolbar-btn small">-</button>
-          <span id="zoom-level">100%</span>
-          <button id="btn-zoom-in" class="toolbar-btn small">+</button>
-          <button id="btn-zoom-fit" class="toolbar-btn small">Fit</button>
+
+      <!-- PDF canvas preview (used by Watermark & Split) -->
+      <div id="content-pdf-preview" class="content-panel active">
+        <div class="preview-toolbar">
+          <button id="btn-prev-page" class="toolbar-btn small" disabled>&larr; Prev</button>
+          <span id="page-indicator">Page 0 / 0</span>
+          <button id="btn-next-page" class="toolbar-btn small" disabled>Next &rarr;</button>
+          <div class="zoom-controls">
+            <button id="btn-zoom-out" class="toolbar-btn small">&#8722;</button>
+            <span id="zoom-level">100%</span>
+            <button id="btn-zoom-in" class="toolbar-btn small">&#43;</button>
+            <button id="btn-zoom-fit" class="toolbar-btn small">Fit</button>
+          </div>
+        </div>
+        <div id="preview-container" class="preview-container">
+          <div class="preview-placeholder">
+            <p>Open a PDF file to get started</p>
+            <p class="hint">Click "Open PDF" or drag &amp; drop</p>
+          </div>
+          <canvas id="preview-canvas"></canvas>
         </div>
       </div>
-      <div id="preview-container" class="preview-container">
-        <div class="preview-placeholder">
-          <p>Open a PDF file to get started</p>
-          <p class="hint">Drag &amp; drop or click "Open PDF"</p>
+
+      <!-- Merge overview panel -->
+      <div id="content-merge" class="content-panel">
+        <div class="tool-content-center">
+          <div class="tool-hero-icon">&#128279;</div>
+          <h2>Merge PDFs</h2>
+          <p class="hint">Add files in the sidebar, then click <strong>Merge &amp; Save</strong>.</p>
+          <p id="merge-summary" class="tool-summary"></p>
         </div>
-        <canvas id="preview-canvas"></canvas>
       </div>
+
+      <!-- Compress info panel -->
+      <div id="content-compress" class="content-panel">
+        <div class="tool-content-center">
+          <div class="tool-hero-icon">&#128230;</div>
+          <h2>Compress PDF</h2>
+          <p class="hint">Open a PDF, then click <strong>Compress &amp; Save</strong>.</p>
+          <p id="compress-result-msg" class="tool-summary"></p>
+        </div>
+      </div>
+
+      <!-- OCR text output panel -->
+      <div id="content-ocr" class="content-panel">
+        <div class="ocr-output-header">
+          <span>Extracted Text</span>
+        </div>
+        <textarea id="ocr-text-output" class="ocr-textarea"
+          placeholder="OCR results will appear here after you click Start OCR…"
+          readonly></textarea>
+      </div>
+
     </section>
   </main>
 
-  <!-- Bottom Status Bar -->
+  <!-- ─── Status Bar ────────────────────────────────────────────────── -->
   <footer class="status-bar">
-    <div id="status-text">Ready</div>
+    <div id="status-text">Ready — choose a tool above</div>
     <div class="progress-wrapper">
       <progress id="progress-bar" max="100" value="0" style="display:none;"></progress>
     </div>
   </footer>
 
-  <!-- Batch Mode Modal -->
+  <!-- ─── Batch Modal ───────────────────────────────────────────────── -->
   <div id="batch-modal" class="modal" style="display:none;">
     <div class="modal-content">
       <div class="modal-header">
@@ -245,6 +398,10 @@
   <script src="js/preview.js"></script>
   <script src="js/watermark-ui.js"></script>
   <script src="js/batch.js"></script>
+  <script src="js/merge-tool.js"></script>
+  <script src="js/split-tool.js"></script>
+  <script src="js/compress-tool.js"></script>
+  <script src="js/ocr-tool.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
